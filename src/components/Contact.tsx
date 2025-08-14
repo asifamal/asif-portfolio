@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { Mail, Phone, MapPin, Linkedin, Github, Send, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
@@ -56,15 +57,30 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 3000);
+    // Replace these with your actual EmailJS service, template, and user IDs
+    const serviceId = 'service_sgn5hzw';
+    const templateId = 'template_ygyzj0j';
+    const publicKey = 'mOhn6qcYLsUWrRQMw';
+
+    const templateParams = {
+      from_name: formData.name,
+      reply_to: formData.email, // This must match your EmailJS template variable
+      subject: formData.subject,
+      message: formData.message,
+    };
+
+    emailjs.send(serviceId, templateId, templateParams, publicKey)
+      .then(() => {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', subject: '', message: '' });
+        }, 3000);
+      })
+      .catch((error) => {
+        alert('Failed to send message. Please try again later.');
+        console.error('EmailJS error:', error);
+      });
   };
 
   return (

@@ -14,8 +14,8 @@ const Portfolio = () => {
       date: 'Feb 2024',
       technologies: ['Django', 'Docker', 'Jenkins', 'CI/CD', 'PostgreSQL'],
       category: 'DevOps',
-      githubUrl: '#',
-      liveUrl: '#',
+  // githubUrl: '#',
+  // liveUrl: '#',
       image: dockerDjangoImg
     },
     {
@@ -24,8 +24,8 @@ const Portfolio = () => {
       date: 'Nov 2023',
       technologies: ['React', 'Node.js', 'MongoDB', 'Razorpay', 'JWT'],
       category: 'Full Stack',
-      githubUrl: '#',
-      liveUrl: '#',
+  // githubUrl: '#',
+  // liveUrl: '#',
       image: shopifyEcommerceImg
     },
     {
@@ -34,8 +34,8 @@ const Portfolio = () => {
       date: 'Jun 2024',
       technologies: ['Django REST', 'Angular', 'PostgreSQL', 'Redis', 'Celery'],
       category: 'Enterprise',
-      githubUrl: '#',
-      liveUrl: '#',
+  // githubUrl: '#',
+  // liveUrl: '#',
       image: erpimg
     },
     {
@@ -44,8 +44,8 @@ const Portfolio = () => {
       date: 'Dec 2023',
       technologies: ['Flask', 'PyTorch', 'Python', 'Chart.js', 'AWS'],
       category: 'Machine Learning',
-      githubUrl: '#',
-      liveUrl: '#',
+  // githubUrl: '#',
+  // liveUrl: '#',
       image: mlimg
     }
   ];
@@ -113,28 +113,6 @@ const Portfolio = () => {
                         {project.title.split(' ').map(word => word[0]).join('')}
                       </span>
                     </div>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 gap-3">
-                    <a 
-                      href={project.githubUrl}
-                      onClick={e => project.githubUrl === '#' && e.preventDefault()}
-                      className="w-10 h-10 bg-card rounded-full flex items-center justify-center text-foreground hover:text-primary transition-colors"
-                      aria-label={`View ${project.title} on GitHub`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Github size={20} />
-                    </a>
-                    <a 
-                      href={project.liveUrl}
-                      onClick={e => project.liveUrl === '#' && e.preventDefault()}
-                      className="w-10 h-10 bg-card rounded-full flex items-center justify-center text-foreground hover:text-primary transition-colors"
-                      aria-label={`View Live ${project.title}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink size={20} />
-                    </a>
                   </div>
                 </div>
 
