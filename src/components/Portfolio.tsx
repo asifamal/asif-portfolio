@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ExternalLink, Github, Calendar, Tag } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import dockerDjangoImg from '../assets/docker-django.jpg';
 import shopifyEcommerceImg from '../assets/shopify-ecommerce.jpg';
@@ -14,8 +15,6 @@ const Portfolio = () => {
       date: 'Feb 2024',
       technologies: ['Django', 'Docker', 'Jenkins', 'CI/CD', 'PostgreSQL'],
       category: 'DevOps',
-  // githubUrl: '#',
-  // liveUrl: '#',
       image: dockerDjangoImg
     },
     {
@@ -24,8 +23,6 @@ const Portfolio = () => {
       date: 'Nov 2023',
       technologies: ['React', 'Node.js', 'MongoDB', 'Razorpay', 'JWT'],
       category: 'Full Stack',
-  // githubUrl: '#',
-  // liveUrl: '#',
       image: shopifyEcommerceImg
     },
     {
@@ -34,8 +31,6 @@ const Portfolio = () => {
       date: 'Jun 2024',
       technologies: ['Django REST', 'Angular', 'PostgreSQL', 'Redis', 'Celery'],
       category: 'Enterprise',
-  // githubUrl: '#',
-  // liveUrl: '#',
       image: erpimg
     },
     {
@@ -44,8 +39,6 @@ const Portfolio = () => {
       date: 'Dec 2023',
       technologies: ['Flask', 'PyTorch', 'Python', 'Chart.js', 'AWS'],
       category: 'Machine Learning',
-  // githubUrl: '#',
-  // liveUrl: '#',
       image: mlimg
     }
   ];
@@ -58,11 +51,16 @@ const Portfolio = () => {
     : projects.filter(project => project.category === activeCategory);
 
   return (
-    <section id="portfolio" className="py-20 bg-background">
+    <section id="portfolio" className="py-20 bg-background relative">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 animate-fade-in-up">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="font-display font-bold text-4xl md:text-5xl mb-6">
               My <span className="text-primary">Portfolio</span>
             </h2>
@@ -70,119 +68,162 @@ const Portfolio = () => {
               Here are some of the projects I've worked on, showcasing my skills in 
               web development, DevOps, and system architecture.
             </p>
-          </div>
+          </motion.div>
 
           {/* Category Filter */}
-          <div
-            className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in-up"
-            style={{ animationDelay: '0.1s' }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-3 mb-12"
           >
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 relative ${
                   activeCategory === category
-                    ? 'bg-gradient-primary text-primary-foreground shadow-card'
+                    ? 'text-primary-foreground'
                     : 'bg-card text-muted-foreground hover:text-foreground hover:shadow-soft'
                 }`}
               >
-                {category}
+                {activeCategory === category && (
+                  <motion.div
+                    layoutId="activeCategory"
+                    className="absolute inset-0 bg-gradient-primary rounded-full"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <span className="relative z-10">{category}</span>
               </button>
             ))}
-          </div>
+          </motion.div>
 
           {/* Projects Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {filteredProjects.map((project) => (
-              <div 
-                key={project.title}
-                className="project-card group animate-fade-in-up"
-                style={{ animationDelay: '0.2s' }}
-              >
-                {/* Project Image */}
-                <div className="relative overflow-hidden rounded-2xl mb-6">
-                  <div className="aspect-video bg-gradient-hero relative flex items-center justify-center">
-                    <div className="w-full h-full flex items-center justify-center relative">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="aspect-video w-full object-cover rounded-2xl"
-                      />
-                      <span className="absolute text-4xl font-display font-bold text-primary opacity-20 select-none pointer-events-none">
-                        {project.title.split(' ').map(word => word[0]).join('')}
-                      </span>
+          <motion.div layout className="grid md:grid-cols-2 gap-8">
+            <AnimatePresence mode='popLayout'>
+              {filteredProjects.map((project) => (
+                <motion.div 
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  key={project.title}
+                  className="project-card group bg-card border border-white/5 rounded-3xl overflow-hidden hover:shadow-glow"
+                >
+                  {/* Project Image */}
+                  <div className="relative overflow-hidden mb-6">
+                    <div className="aspect-video bg-gradient-hero relative flex items-center justify-center overflow-hidden">
+                      <motion.div 
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full h-full"
+                      >
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                        {/* Overlay Buttons */}
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-3 bg-white rounded-full text-black"
+                        >
+                          <Github size={20} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-3 bg-primary rounded-full text-white"
+                        >
+                          <ExternalLink size={20} />
+                        </motion.button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Project Info */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                      <Tag size={14} />
-                      {project.category}
-                    </span>
-                    <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Calendar size={14} />
-                      {project.date}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display font-semibold text-xl text-foreground group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-muted-foreground leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech, techIndex) => (
-                      <span 
-                        key={techIndex}
-                        className="px-3 py-1 bg-muted rounded-full text-sm font-medium text-muted-foreground"
-                      >
-                        {tech}
+                  {/* Project Info */}
+                  <div className="p-6 pt-0 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                        <Tag size={14} />
+                        {project.category}
                       </span>
-                    ))}
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Calendar size={14} />
+                        {project.date}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display font-semibold text-xl text-foreground group-hover:text-primary transition-colors">
+                      {project.title}
+                    </h3>
+
+                    <p className="text-muted-foreground leading-relaxed line-clamp-3">
+                      {project.description}
+                    </p>
+
+                    {/* Technologies */}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {project.technologies.map((tech, techIndex) => (
+                        <span 
+                          key={techIndex}
+                          className="px-3 py-1 bg-muted/50 border border-white/5 rounded-full text-sm font-medium text-muted-foreground"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
           {/* Call to Action */}
-          <div className="text-center mt-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-16"
+          >
             <p className="text-muted-foreground mb-6">
               Want to see more projects or discuss collaboration?
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-              <a
+              <motion.a
                 href="/Asif%20Amal%20-%20resume.pdf"
                 download
-                className="btn-hero inline-flex items-center gap-2 shadow-lg hover:scale-105 focus:outline-none focus:ring-4 focus:ring-accent/40 transition-transform duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn-hero inline-flex items-center gap-2 shadow-lg"
                 style={{ minWidth: 180 }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
-                </svg>
+                <Download className="w-5 h-5" />
                 Download Resume
-              </a>
-              <button 
+              </motion.a>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-hero inline-flex items-center gap-2"
+                className="btn-secondary inline-flex items-center gap-2"
               >
                 Get in Touch
                 <ExternalLink className="w-5 h-5" />
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 };
+
+// Need to import Download icon as it was used in the original code but missing in imports
+import { Download } from 'lucide-react';
 
 export default Portfolio;

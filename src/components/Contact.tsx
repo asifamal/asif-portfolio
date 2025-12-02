@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { Mail, Phone, MapPin, Linkedin, Github, Send, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -84,11 +85,22 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-muted/50">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-20 bg-muted/30 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 animate-fade-in-up">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="font-display font-bold text-4xl md:text-5xl mb-6">
               Get In <span className="text-primary">Touch</span>
             </h2>
@@ -96,11 +108,16 @@ const Contact = () => {
               Ready to start your next project? Let's discuss how we can work together 
               to create something amazing. I'm always excited to hear about new opportunities.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Info */}
-            <div className="animate-fade-in-up">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <h3 className="font-display font-semibold text-2xl mb-8 text-foreground">
                 Let's Start a Conversation
               </h3>
@@ -116,12 +133,13 @@ const Contact = () => {
                 {contactInfo.map((info, index) => {
                   const IconComponent = info.icon;
                   return (
-                    <a
+                    <motion.a
                       key={index}
                       href={info.href}
-                      className="flex items-center gap-4 p-4 bg-card rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group"
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      className="flex items-center gap-4 p-4 bg-card border border-white/5 rounded-2xl shadow-sm hover:shadow-glow transition-all duration-300 group"
                     >
-                      <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                         <IconComponent className="w-6 h-6 text-primary-foreground" />
                       </div>
                       <div>
@@ -130,7 +148,7 @@ const Contact = () => {
                         </div>
                         <div className="text-muted-foreground">{info.value}</div>
                       </div>
-                    </a>
+                    </motion.a>
                   );
                 })}
               </div>
@@ -144,31 +162,41 @@ const Contact = () => {
                   {socialLinks.map((social, index) => {
                     const IconComponent = social.icon;
                     return (
-                      <a
+                      <motion.a
                         key={index}
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`w-12 h-12 bg-card rounded-xl flex items-center justify-center text-muted-foreground hover:scale-110 transition-all duration-300 shadow-soft hover:shadow-card ${social.color}`}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className={`w-12 h-12 bg-card border border-white/5 rounded-xl flex items-center justify-center text-muted-foreground transition-all duration-300 shadow-sm hover:shadow-glow ${social.color}`}
                         aria-label={social.label}
                       >
                         <IconComponent size={20} />
-                      </a>
+                      </motion.a>
                     );
                   })}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Contact Form */}
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              <div className="bg-card rounded-3xl p-8 shadow-card">
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="bg-card/80 backdrop-blur-sm border border-white/5 rounded-3xl p-8 shadow-card">
                 <h3 className="font-display font-semibold text-2xl mb-6 text-foreground">
                   Send Me a Message
                 </h3>
 
                 {isSubmitted ? (
-                  <div className="text-center py-8">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-8"
+                  >
                     <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h4 className="font-display font-semibold text-xl text-foreground mb-2">
                       Message Sent!
@@ -176,7 +204,7 @@ const Contact = () => {
                     <p className="text-muted-foreground">
                       Thanks for reaching out. I'll get back to you soon!
                     </p>
-                  </div>
+                  </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
@@ -191,7 +219,7 @@ const Contact = () => {
                           value={formData.name}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                           placeholder="Enter your name"
                         />
                       </div>
@@ -206,7 +234,7 @@ const Contact = () => {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                           placeholder="Enter your email"
                         />
                       </div>
@@ -223,7 +251,7 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         placeholder="What's this about?"
                       />
                     </div>
@@ -239,22 +267,24 @@ const Contact = () => {
                         onChange={handleInputChange}
                         required
                         rows={5}
-                        className="w-full px-4 py-3 bg-muted border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                        className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
                         placeholder="Tell me about your project or just say hi!"
                       />
                     </div>
 
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       type="submit"
                       className="btn-hero w-full inline-flex items-center justify-center gap-2"
                     >
                       Send Message
                       <Send className="w-5 h-5" />
-                    </button>
+                    </motion.button>
                   </form>
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

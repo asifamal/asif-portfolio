@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import React from "react";
 import { FaReact, FaDocker, FaAws, FaAngular, FaNodeJs, FaGit, FaJenkins } from "react-icons/fa";
 import { SiPython, SiDjango, SiPostgresql, SiRedis, SiKubernetes } from "react-icons/si";
+import { motion } from 'framer-motion';
 
 const Skills = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
   const skillCategories = [
     {
       title: 'Programming Languages',
@@ -53,30 +52,42 @@ const Skills = () => {
     }
   ];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
       },
-      { threshold: 0.3 }
-    );
+    },
+  };
 
-    const element = document.getElementById('skills');
-    if (element) {
-      observer.observe(element);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
 
   return (
-    <section id="skills" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="skills" className="py-20 bg-background relative overflow-hidden">
+       {/* Background Elements */}
+       <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 animate-fade-in-up">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="font-display font-bold text-4xl md:text-5xl mb-6">
               My <span className="text-primary">Skills</span>
             </h2>
@@ -84,15 +95,17 @@ const Skills = () => {
               A comprehensive overview of my technical expertise across various 
               programming languages, frameworks, and development tools.
             </p>
-          </div>
+          </motion.div>
 
           {/* Skills Grid */}
           <div className="grid md:grid-cols-2 gap-12">
             {skillCategories.map((category, categoryIndex) => (
-              <div 
+              <motion.div 
                 key={categoryIndex}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${categoryIndex * 0.1}s` }}
+                initial={{ opacity: 0, x: categoryIndex % 2 === 0 ? -30 : 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
                 <h3 className="font-display font-semibold text-2xl mb-8 text-foreground">
                   {category.title}
@@ -112,23 +125,29 @@ const Skills = () => {
                       
                       {/* Progress Bar */}
                       <div className="h-3 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className={`skill-bar ${isVisible ? 'scale-x-100' : 'scale-x-0'}`}
-                          style={{ 
-                            width: `${skill.level}%`,
-                            transitionDelay: `${(categoryIndex * 6 + skillIndex) * 0.1}s`
-                          }}
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-primary to-accent rounded-full"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 + (skillIndex * 0.1), ease: "easeOut" }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Technologies Icons */}
-          <div className="mt-20 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="mt-20"
+          >
             <h3 className="font-display font-semibold text-2xl text-center mb-12">
               Technologies I <span className="text-primary">Love</span>
             </h3>
@@ -148,59 +167,70 @@ const Skills = () => {
                 { name: 'Kubernetes', icon: <SiKubernetes size={32} color="#fff" /> },
                 { name: 'Git', icon: <FaGit size={32} color="#fff" /> },
               ].map((tech, index) => (
-                <div 
+                <motion.div 
                   key={index}
-                  className="group flex flex-col items-center space-y-2 p-4 rounded-2xl hover:bg-card transition-all duration-300 hover:shadow-soft"
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  className="group flex flex-col items-center space-y-2 p-4 rounded-2xl hover:bg-card border border-transparent hover:border-white/5 transition-all duration-300 hover:shadow-soft cursor-pointer"
                 >
-                  <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
                     {tech.icon}
                   </div>
                   <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors font-medium text-center">
                     {tech.name}
                   </span>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Certifications or Highlights */}
-          <div className="mt-20 bg-gradient-hero rounded-3xl p-8 md:p-12 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <h3 className="font-display font-bold text-3xl text-center mb-8 text-foreground">
-              What Sets Me Apart
-            </h3>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-primary-foreground font-bold text-2xl">⚡</span>
-                </div>
-                <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Fast Learner</h4>
-                <p className="text-muted-foreground">
-                  Quickly adapt to new technologies and frameworks to deliver cutting-edge solutions.
-                </p>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="mt-20 bg-gradient-hero rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"
+          >
+             <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+             <div className="relative z-10">
+              <h3 className="font-display font-bold text-3xl text-center mb-8 text-foreground">
+                What Sets Me Apart
+              </h3>
               
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-accent-foreground font-bold text-2xl">🎯</span>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="text-primary-foreground font-bold text-2xl">⚡</span>
+                  </div>
+                  <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Fast Learner</h4>
+                  <p className="text-muted-foreground">
+                    Quickly adapt to new technologies and frameworks to deliver cutting-edge solutions.
+                  </p>
                 </div>
-                <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Problem Solver</h4>
-                <p className="text-muted-foreground">
-                  Analytical approach to breaking down complex problems into manageable solutions.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-primary-foreground font-bold text-2xl">🚀</span>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="text-accent-foreground font-bold text-2xl">🎯</span>
+                  </div>
+                  <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Problem Solver</h4>
+                  <p className="text-muted-foreground">
+                    Analytical approach to breaking down complex problems into manageable solutions.
+                  </p>
                 </div>
-                <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Innovation Focused</h4>
-                <p className="text-muted-foreground">
-                  Always exploring new ways to improve efficiency and user experience.
-                </p>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="text-primary-foreground font-bold text-2xl">🚀</span>
+                  </div>
+                  <h4 className="font-display font-semibold text-xl mb-2 text-foreground">Innovation Focused</h4>
+                  <p className="text-muted-foreground">
+                    Always exploring new ways to improve efficiency and user experience.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

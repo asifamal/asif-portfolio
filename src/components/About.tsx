@@ -1,4 +1,5 @@
 import { Calendar, MapPin, GraduationCap, Briefcase } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const About = () => {
   const timeline = [
@@ -31,12 +32,43 @@ const About = () => {
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  };
+
   return (
-    <section id="about" className="py-20 bg-muted/50">
-      <div className="container mx-auto px-4">
+    <section id="about" className="py-20 bg-muted/30 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 animate-fade-in-up">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
             <h2 className="font-display font-bold text-4xl md:text-5xl mb-6">
               About <span className="text-primary">Me</span>
             </h2>
@@ -45,10 +77,16 @@ const About = () => {
               beautiful solutions. With expertise in both frontend and backend development, 
               I create end-to-end digital experiences that make a difference.
             </p>
-          </div>
+          </motion.div>
 
           {/* Personal Bio */}
-          <div className="bg-card rounded-3xl p-8 shadow-card mb-12 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-card/50 backdrop-blur-sm border border-white/10 rounded-3xl p-8 shadow-card mb-12"
+          >
             <h3 className="font-display font-semibold text-2xl mb-4 text-primary">My Journey</h3>
             <p className="text-muted-foreground leading-relaxed mb-4">
               As a motivated and skilled software engineer, I specialize in web development and DevOps practices. 
@@ -60,26 +98,33 @@ const About = () => {
               and staying up-to-date with the latest technologies. My approach combines technical expertise with 
               a keen eye for user experience, ensuring that every solution I build is both robust and user-friendly.
             </p>
-          </div>
+          </motion.div>
 
           {/* Timeline */}
-          <div className="space-y-8">
-            <h3 className="font-display font-semibold text-2xl text-center mb-8">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <motion.h3 variants={itemVariants} className="font-display font-semibold text-2xl text-center mb-8">
               Experience & <span className="text-primary">Education</span>
-            </h3>
+            </motion.h3>
             
             {timeline.map((item, index) => (
-              <div 
+              <motion.div 
                 key={index} 
-                className="bg-card rounded-3xl p-8 shadow-card hover:shadow-floating transition-all duration-300 animate-fade-in-up"
-                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                className="bg-card/80 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-sm hover:shadow-glow transition-all duration-300"
               >
                 <div className="flex flex-col md:flex-row md:items-start gap-6">
                   {/* Icon */}
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg ${
                     item.type === 'work' 
-                      ? 'bg-gradient-primary text-primary-foreground' 
-                      : 'bg-gradient-accent text-accent-foreground'
+                      ? 'bg-gradient-to-br from-primary to-primary-glow text-primary-foreground' 
+                      : 'bg-gradient-to-br from-accent to-pink-500 text-accent-foreground'
                   }`}>
                     {item.type === 'work' ? <Briefcase size={24} /> : <GraduationCap size={24} />}
                   </div>
@@ -112,7 +157,7 @@ const About = () => {
                       {item.technologies.map((tech, techIndex) => (
                         <span 
                           key={techIndex}
-                          className="px-3 py-1 bg-muted rounded-full text-sm font-medium text-muted-foreground"
+                          className="px-3 py-1 bg-muted/50 border border-white/5 rounded-full text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                         >
                           {tech}
                         </span>
@@ -120,9 +165,9 @@ const About = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
